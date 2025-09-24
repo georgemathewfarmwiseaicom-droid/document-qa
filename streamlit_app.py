@@ -1,53 +1,87 @@
 import streamlit as st
-from openai import OpenAI
+import streamlit.components.v1 as components
 
-# Show title and description.
-st.title("📄 Document question answering")
-st.write(
-    "Upload a document below and ask a question about it – GPT will answer! "
-    "To use this app, you need to provide an OpenAI API key, which you can get [here](https://platform.openai.com/account/api-keys). "
-)
+# Your HTML code
+html_code = """
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dummy Clickable Page</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    .section { margin-bottom: 25px; }
+    button, a, input, select { margin: 5px; padding: 8px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Dummy Clickable Elements Page</h1>
 
-# Ask user for their OpenAI API key via `st.text_input`.
-# Alternatively, you can store the API key in `./.streamlit/secrets.toml` and access it
-# via `st.secrets`, see https://docs.streamlit.io/develop/concepts/connections/secrets-management
-openai_api_key = st.text_input("OpenAI API Key", type="password")
-if not openai_api_key:
-    st.info("Please add your OpenAI API key to continue.", icon="🗝️")
-else:
+  <div class="section">
+    <h2>Buttons</h2>
+    <button id="btn1">Button 1</button>
+    <button id="btn2" class="primary">Button 2</button>
+    <button id="btn3" disabled>Disabled Button</button>
+    <input type="button" value="Input Button">
+  </div>
 
-    # Create an OpenAI client.
-    client = OpenAI(api_key=openai_api_key)
+  <div class="section">
+    <h2>Links</h2>
+    <a href="#home" id="link1">Go Home</a>
+    <a href="#about" class="nav-link">About Us</a>
+    <a href="https://example.com" target="_blank">External Link</a>
+  </div>
 
-    # Let the user upload a file via `st.file_uploader`.
-    uploaded_file = st.file_uploader(
-        "Upload a document (.txt or .md)", type=("txt", "md")
-    )
+  <div class="section">
+    <h2>Form Inputs</h2>
+    <label>
+      Text Input: 
+      <input type="text" id="username" placeholder="Enter username">
+    </label>
+    <br>
+    <label>
+      Password: 
+      <input type="password" id="password">
+    </label>
+    <br>
+    <label>
+      <input type="checkbox" id="chk1"> Subscribe to newsletter
+    </label>
+    <label>
+      <input type="checkbox" id="chk2"> Accept terms
+    </label>
+    <br>
+    <label>
+      <input type="radio" name="gender" value="male"> Male
+    </label>
+    <label>
+      <input type="radio" name="gender" value="female"> Female
+    </label>
+    <br>
+    <select id="dropdown">
+      <option value="">-- Select option --</option>
+      <option value="opt1">Option 1</option>
+      <option value="opt2">Option 2</option>
+      <option value="opt3">Option 3</option>
+    </select>
+    <br>
+    <button type="submit">Submit Form</button>
+  </div>
 
-    # Ask the user for a question via `st.text_area`.
-    question = st.text_area(
-        "Now ask a question about the document!",
-        placeholder="Can you give me a short summary?",
-        disabled=not uploaded_file,
-    )
+  <div class="section">
+    <h2>Other Clickables</h2>
+    <input type="file" id="fileUpload">
+    <br>
+    <input type="color" id="colorPicker">
+    <br>
+    <input type="date" id="datePicker">
+    <br>
+    <button onclick="alert('Hello!')">Button with JS</button>
+  </div>
 
-    if uploaded_file and question:
+</body>
+</html>
+"""
 
-        # Process the uploaded file and question.
-        document = uploaded_file.read().decode()
-        messages = [
-            {
-                "role": "user",
-                "content": f"Here's a document: {document} \n\n---\n\n {question}",
-            }
-        ]
-
-        # Generate an answer using the OpenAI API.
-        stream = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=messages,
-            stream=True,
-        )
-
-        # Stream the response to the app using `st.write_stream`.
-        st.write_stream(stream)
+# Render HTML inside Streamlit
+components.html(html_code, height=800, scrolling=True)
